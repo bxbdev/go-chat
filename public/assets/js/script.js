@@ -1,9 +1,10 @@
-const connection = new WebSocket('ws://localhost:8000/ws');
+// const socket = new WebSocket('ws://localhost:8000/ws');
+const socket = new WebSocket("ws://" + window.location.host + "/ws");
 const messages = document.getElementById('messages');
 const send = document.querySelector('#send');
 const sendForm = document.querySelector('#chat-form');
 
-connection.onmessage = (event) => {
+socket.onmessage = (event) => {
     let message = JSON.parse(event.data);
     messages.innerHTML += '<p><strong>' + message.username + ': </strong>' + message.message + '</p>';
 };
@@ -18,6 +19,6 @@ sendForm.addEventListener('submit', (e) => {
         username,
         message
     };
-    connection.send(JSON.stringify(data));
+    socket.send(JSON.stringify(data));
     messageInput.value = '';
 });
