@@ -28,25 +28,25 @@ type Message struct {
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	// Upgrade initial GET request to a websocket
-	conn, err := upgrader.Upgrade(w, r, nil)
+	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
 	// Make sure we close the connection when the function returns
-	defer conn.Close()
+	defer ws.Close()
 
 	// Register our new client
-	clients[conn] = true
+	clients[ws] = true
 
 	for {
 		var msg Message
 		// Read in a new message as JSON and map it to a Message object
-		err := conn.ReadJSON(&msg)
+		err := ws.ReadJSON(&msg)
 		if err != nil {
 			log.Printf("error: %v", err)
-			delete(clients, conn)
+			delete(clients, ws)
 			break
 		}
 		// send the message to the broadcast channel
